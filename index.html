@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAPODI - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h1>LAPODI <span class="subtitle">Dashboard Analytics</span></h1>
+            </div>
+            <div class="header-controls">
+                <div class="theme-toggle">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </div>
+                <div class="last-updated">
+                    <i class="fas fa-sync-alt"></i>
+                    <span id="last-updated-text">Memperbarui...</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="dashboard-controls">
+                <div class="control-group">
+                    <label for="iframe-height"><i class="fas fa-arrows-alt-v"></i> Tinggi Dashboard</label>
+                    <div class="slider-container">
+                        <input type="range" id="iframe-height" min="500" max="1200" value="900" step="50">
+                        <span id="height-value">900px</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label for="refresh-interval"><i class="fas fa-redo"></i> Refresh Otomatis</label>
+                    <select id="refresh-interval">
+                        <option value="0">Tidak ada</option>
+                        <option value="30">30 detik</option>
+                        <option value="60" selected>1 menit</option>
+                        <option value="300">5 menit</option>
+                        <option value="600">10 menit</option>
+                    </select>
+                </div>
+                <button id="refresh-btn" class="btn-primary">
+                    <i class="fas fa-sync-alt"></i> Refresh Dashboard
+                </button>
+            </div>
+
+            <div class="dashboard-container">
+                <div class="dashboard-header">
+                    <h2><i class="fas fa-tachometer-alt"></i> Dashboard Utama</h2>
+                    <div class="dashboard-status">
+                        <span class="status-indicator" id="status-indicator"></span>
+                        <span id="status-text">Memuat...</span>
+                    </div>
+                </div>
+
+                <div class="iframe-loading" id="loading">
+                    <div class="spinner">
+                        <div class="double-bounce1"></div>
+                        <div class="double-bounce2"></div>
+                    </div>
+                    <p>Memuat dashboard LAPODI...</p>
+                </div>
+
+                <div class="iframe-error" id="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Gagal memuat dashboard</h3>
+                    <p>Terjadi kesalahan saat memuat konten dari Google Apps Script.</p>
+                    <button id="retry-btn" class="btn-secondary">
+                        <i class="fas fa-redo"></i> Coba Lagi
+                    </button>
+                </div>
+
+                <iframe 
+                    src="https://script.google.com/macros/s/AKfycby-yKj5FNr7N3PCFgNnkKIDuj38pCs3wTO8lo51H0oRpXbs7QHK6sBMwdjt1RAY4N4v/exec" 
+                    id="dashboard-iframe" 
+                    height="900" 
+                    scrolling="no" 
+                    title="LAPODI Dashboard"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+            </div>
+
+            <div class="dashboard-info">
+                <div class="info-card">
+                    <i class="fas fa-info-circle"></i>
+                    <h3>Informasi Dashboard</h3>
+                    <p>Dashboard ini menampilkan data dari Google Apps Script. Anda dapat menyesuaikan tinggi dashboard dan mengatur refresh otomatis sesuai kebutuhan.</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-cogs"></i>
+                    <h3>Fitur Dashboard</h3>
+                    <ul>
+                        <li>Tinggi dashboard dapat disesuaikan</li>
+                        <li>Refresh otomatis dengan interval yang dapat diatur</li>
+                        <li>Mode gelap/terang</li>
+                        <li>Monitoring status dashboard</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>LAPODI Dashboard &copy; <span id="current-year"></span> | 
+                <i class="fas fa-clock"></i> Terakhir diperbarui: <span id="last-updated-time">-</span>
+            </p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
