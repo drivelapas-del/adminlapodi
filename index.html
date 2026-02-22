@@ -1,120 +1,292 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADMIN LAPODI - Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Admin Lapodi</title>
+    <!-- gaya bersih dan responsif untuk semua perangkat -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f0f3f8 0%, #e6ecf5 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            padding: 12px;
+        }
+
+        .card-frame {
+            width: 100%;
+            max-width: 1400px;  /* batas lebar agar tetap nyaman di layar besar */
+            height: 95vh;        /* memanfaatkan tinggi viewport */
+            max-height: 98vh;
+            background: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 20, 30, 0.35), 0 4px 18px 0 rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(2px);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        /* header sederhana sebagai informasi */
+        .frame-header {
+            padding: 16px 24px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(0, 30, 60, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .header-icon {
+            background: #1e3c5c;
+            color: white;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 6px 10px rgba(27, 55, 96, 0.2);
+        }
+
+        .header-text {
+            flex: 1;
+        }
+
+        .header-text h2 {
+            font-size: 1.3rem;
+            font-weight: 540;
+            letter-spacing: -0.01em;
+            color: #122b44;
+            line-height: 1.3;
+        }
+
+        .header-text p {
+            font-size: 0.85rem;
+            color: #3a5470;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .url-badge {
+            background: #d9e2ef;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.75rem;
+            color: #113255;
+            word-break: break-all;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            max-width: 400px;
+            display: inline-block;
+            border: 1px solid #b3c9e2;
+        }
+
+        /* container iframe menempati sisa ruang */
+        .iframe-wrapper {
+            flex: 1;
+            width: 100%;
+            background: #f8fafd;
+            position: relative;
+            /* memastikan iframe memenuhi card */
+            display: flex;
+        }
+
+        .iframe-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+            display: block;
+            transition: opacity 0.2s;
+        }
+
+        /* fallback jika iframe tidak didukung atau error */
+        .iframe-fallback {
+            display: none;
+            padding: 24px;
+            text-align: center;
+            color: #4a5e75;
+        }
+
+        /* opsional: tampilkan status loading subtle */
+        .iframe-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 32px;
+            height: 32px;
+            margin: -16px 0 0 -16px;
+            border: 3px solid rgba(30, 60, 100, 0.1);
+            border-top-color: #1e3c5c;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.25s;
+            z-index: 9;
+        }
+
+        .iframe-wrapper.loading::after {
+            opacity: 1;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* perbaikan untuk perangkat sangat kecil (misal layar 280px) */
+        @media (max-width: 420px) {
+            .frame-header {
+                padding: 12px 16px;
+            }
+            .header-text h2 {
+                font-size: 1.1rem;
+            }
+            .url-badge {
+                max-width: 180px;
+            }
+            .card-frame {
+                border-radius: 24px;
+                height: 92vh;
+            }
+        }
+
+        /* mode landscape pada hp kecil */
+        @media (max-height: 480px) and (orientation: landscape) {
+            .card-frame {
+                height: 88vh;
+            }
+            .frame-header {
+                padding: 8px 18px;
+            }
+            .header-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 16px;
+            }
+        }
+
+        /* sentuhan gelap opsional (ikuti preferensi sistem) */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #1c2633;
+            }
+            .card-frame {
+                background: #1e2a36;
+                border-color: #2a3a4a;
+                box-shadow: 0 25px 40px -12px #0b1015;
+            }
+            .frame-header {
+                background: rgba(25, 35, 50, 0.8);
+                border-bottom-color: #2c4055;
+            }
+            .header-text h2 {
+                color: #dfeaf5;
+            }
+            .header-text p {
+                color: #a3bcd9;
+            }
+            .url-badge {
+                background: #1f3247;
+                color: #c9dff5;
+                border-color: #2b4a6a;
+            }
+            .iframe-wrapper {
+                background: #1b2532;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo-container">
-                <div class="logo">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <h1>ADMIN LAPODI <span class="subtitle">Dashboard Analytics</span></h1>
+    <div class="card-frame">
+        <!-- header informatif, tetap responsif -->
+        <div class="frame-header">
+            <div class="header-icon" aria-hidden="true">⚡</div>
+            <div class="header-text">
+                <h2>ADMIN-LAPODI</h2>
+                <p>
+                    <span>dimuat dari:</span>
+                    <span class="url-badge" title="https://script.google.com/macros/s/AKfycby-yKj5FNr7N3PCFgNnkKIDuj38pCs3wTO8lo51H0oRpXbs7QHK6sBMwdjt1RAY4N4v/exec">
+                        script.google.com/…/exec
+                    </span>
+                </p>
             </div>
-            <div class="header-controls">
-                <div class="theme-toggle">
-                    <i class="fas fa-moon" id="theme-icon"></i>
-                </div>
-                <div class="last-updated">
-                    <i class="fas fa-sync-alt"></i>
-                    <span id="last-updated-text">Memperbarui...</span>
-                </div>
-            </div>
-        </header>
+        </div>
 
-        <main>
-            <div class="dashboard-controls">
-                <div class="control-group">
-                    <label for="iframe-height"><i class="fas fa-arrows-alt-v"></i> Tinggi Dashboard</label>
-                    <div class="slider-container">
-                        <input type="range" id="iframe-height" min="500" max="1200" value="900" step="50">
-                        <span id="height-value">900px</span>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label for="refresh-interval"><i class="fas fa-redo"></i> Refresh Otomatis</label>
-                    <select id="refresh-interval">
-                        <option value="0">Tidak ada</option>
-                        <option value="30">30 detik</option>
-                        <option value="60" selected>1 menit</option>
-                        <option value="300">5 menit</option>
-                        <option value="600">10 menit</option>
-                    </select>
-                </div>
-                <button id="refresh-btn" class="btn-primary">
-                    <i class="fas fa-sync-alt"></i> Refresh Dashboard
-                </button>
-            </div>
-
-            <div class="dashboard-container">
-                <div class="dashboard-header">
-                    <h2><i class="fas fa-tachometer-alt"></i> Dashboard Utama</h2>
-                    <div class="dashboard-status">
-                        <span class="status-indicator" id="status-indicator"></span>
-                        <span id="status-text">Memuat...</span>
-                    </div>
-                </div>
-
-                <div class="iframe-loading" id="loading">
-                    <div class="spinner">
-                        <div class="double-bounce1"></div>
-                        <div class="double-bounce2"></div>
-                    </div>
-                    <p>Memuat dashboard LAPODI...</p>
-                </div>
-
-                <div class="iframe-error" id="error-message">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <h3>Gagal memuat dashboard</h3>
-                    <p>Terjadi kesalahan saat memuat konten dari Google Apps Script.</p>
-                    <button id="retry-btn" class="btn-secondary">
-                        <i class="fas fa-redo"></i> Coba Lagi
-                    </button>
-                </div>
-
-                <iframe 
-                    src="https://script.google.com/macros/s/AKfycby-yKj5FNr7N3PCFgNnkKIDuj38pCs3wTO8lo51H0oRpXbs7QHK6sBMwdjt1RAY4N4v/exec" 
-                    id="dashboard-iframe" 
-                    height="900" 
-                    scrolling="no" 
-                    title="LAPODI Dashboard"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-            </div>
-
-            <div class="dashboard-info">
-                <div class="info-card">
-                    <i class="fas fa-info-circle"></i>
-                    <h3>Informasi Dashboard</h3>
-                    <p>Dashboard ini menampilkan data dari Google Apps Script. Anda dapat menyesuaikan tinggi dashboard dan mengatur refresh otomatis sesuai kebutuhan.</p>
-                </div>
-                <div class="info-card">
-                    <i class="fas fa-cogs"></i>
-                    <h3>Fitur Dashboard</h3>
-                    <ul>
-                        <li>Tinggi dashboard dapat disesuaikan</li>
-                        <li>Refresh otomatis dengan interval yang dapat diatur</li>
-                        <li>Mode gelap/terang</li>
-                        <li>Monitoring status dashboard</li>
-                    </ul>
-                </div>
-            </div>
-        </main>
-
-        <footer>
-            <p>LAPODI Dashboard &copy; <span id="current-year"></span> | 
-                <i class="fas fa-clock"></i> Terakhir diperbarui: <span id="last-updated-time">-</span>
-            </p>
-        </footer>
+        <!-- area iframe dengan deteksi loading sederhana -->
+        <div class="iframe-wrapper" id="iframeWrapper">
+            <iframe 
+                id="mainFrame"
+                src="https://script.google.com/macros/s/AKfycby-yKj5FNr7N3PCFgNnkKIDuj38pCs3wTO8lo51H0oRpXbs7QHK6sBMwdjt1RAY4N4v/exec"
+                title="Konten Google Apps Script"
+                sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals allow-downloads allow-popups-to-escape-sandbox"
+                referrerpolicy="strict-origin-when-cross-origin"
+                loading="lazy"
+                frameborder="0"
+                allow="geolocation; microphone; camera; payment; autoplay; clipboard-write"
+            >
+                <p class="iframe-fallback">Maaf, browser tidak mendukung iframe atau konten tidak dapat ditampilkan.</p>
+            </iframe>
+        </div>
     </div>
 
-    <script src="script.js"></script>
-</body>
+    <!-- sedikit JavaScript untuk menghilangkan indikator loading setelah iframe termuat -->
+    <script>
+        (function() {
+            const wrapper = document.getElementById('iframeWrapper');
+            const iframe = document.getElementById('mainFrame');
 
+            if (wrapper && iframe) {
+                // tambah class loading saat awal
+                wrapper.classList.add('loading');
+
+                // fungsi untuk menghilangkan loading
+                function removeLoading() {
+                    wrapper.classList.remove('loading');
+                }
+
+                // event ketika iframe selesai dimuat
+                iframe.addEventListener('load', removeLoading);
+
+                // cadangan: jika iframe butuh waktu lama, tetap hilangkan loading setelah maks 8 detik
+                setTimeout(removeLoading, 8000);
+
+                // jika terjadi error (misal blok oleh CORS, dll), tetap hilangkan loading
+                iframe.addEventListener('error', function() {
+                    removeLoading();
+                    // opsional: tampilkan pesan kecil di console
+                    console.warn('iframe mungkin gagal dimuat — periksa kembali URL atau kebijakan keamanan.');
+                });
+
+                // untuk berjaga-jaga jika iframe langsung dari cache (load kadang tidak terpicu)?
+                // namun secara normal akan terpicu.
+            }
+        })();
+    </script>
+
+    <!-- catatan: alamat iframe sudah sesuai dengan link Google Apps Script.
+         Sandbox yang diberikan cukup longgar agar script dapat berjalan normal.
+         Jika membutuhkan akses ke parent, sesuaikan parameter 'sandbox' (misal hapus allow-same-origin jika tidak perlu).
+         Untuk deployment, pastikan publikasi script sebagai "Web App" → Execute as "Me" & akses "Anyone" bahkan "Anyone with link".
+    -->
+</body>
 </html>
